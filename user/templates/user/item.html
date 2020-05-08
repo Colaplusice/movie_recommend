@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block right-panel-content %}
+    <h3 class="text-center">{{ title }}</h3>
+    {% if  not movies %}
+        <h3 class="text-center">对不起没有电影</h3>
+    {% endif %}
+
+    {% for movie in movies %}
+
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-md-3 column">
+                    <img class="img-thumbnail movie-image" alt="140x140" src="/media/{{ movie.pic }}" width=140px
+                         height=140px/>
+                </div>
+                <div class="col-md-7 column">
+                    <h3>
+                        <a href="{% url 'movie' movie.id %}">    {{ movie.name }}</a>
+                    </h3>
+                    <p>{{ movie.intro | slice:":100" }}......</p>
+                    <p>导演:{{ movie.director }}</p>
+                    <p>主演:{{ movie.leader }}</p>
+                    <p>年代:{{ movie.years}}</p>
+                    <p>豆瓣得分:{{ movie.d_rate }}</p>
+                    <p>浏览量:{{ movie.num }} /  收藏量:{{ movie.collect.count }}  / 评分量: {{ movie.rate_set.count}}</p>
+
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="container-fluid">
+        <ul class="pagination" id="pager">
+            {#上一页按钮开始#}
+            {# 如果当前页有上一页#}
+            {% if movies.has_previous %}
+                {#  当前页的上一页按钮正常使用#}
+                <li class="previous"><a href="{{ path }}?page={{ movies.previous_page_number }}">上一页</a></li>
+            {% else %}
+                {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                <li class="previous disabled"><a href="#">上一页</a></li>
+            {% endif %}
+            {#上一页按钮结束#}
+            {# 页码开始#}
+            <li class="item active"><a href="{{ path }}?page={{ movies.number }}">{{ movies.number }}</a></li>
+            {#            <li class="item"><a href="{{ path }}?page={{ movie.number|add:1 }}">{{ movie.number|add:1 }}</a></li>#}
+            {#            <li class="item"><a href="{{ path }}?page={{ movie.number|add:2 }}">{{ movie.number|add:2 }}</a></li>#}
+            {#页码结束#}
+            {# 下一页按钮开始#}
+            {% if movies.has_next %}
+                <li class="next"><a href="{{ path }}?page={{ movies.next_page_number }}">下一页</a></li>
+            {% else %}
+                <li class="next disabled"><a href="#">下一页</a></li>
+            {% endif %}
+            <li class="item"><a href="#">
+                {{ movies.number }}/{{ movies.paginator.num_pages }}</a>
+            </li>
+
+        </ul>
+    </div>
+{% endblock %}
